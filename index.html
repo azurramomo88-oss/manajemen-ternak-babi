@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#155b49">
+<title>Manajemen Ternak Babi</title>
+<style>
+:root{--green:#155b49;--green2:#237c61;--mint:#e8f4ed;--bg:#f4f7f5;--ink:#20352d;--muted:#687b72;--line:#dbe6df;--red:#b63838;--amber:#fff4d6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,"Segoe UI",Arial,sans-serif}header{background:linear-gradient(120deg,#124b3d,#278464);color:white;padding:22px 16px}header .inner,main,.foot{max-width:1200px;margin:auto}h1{font-size:clamp(22px,4vw,32px);margin:0}header p{margin:6px 0 0;color:#d8eee5}.inner{padding:0 10px}main{padding:15px 10px 35px}.nav{display:flex;gap:7px;overflow-x:auto;padding:2px 0 12px}.nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}.nav button.active,.primary{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important}.page{display:none}.page.active{display:block}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px #153f3008}.panel h2{font-size:18px;margin:0 0 13px}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.stat{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fbfdfb;min-width:0}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:clamp(16px,2.3vw,23px);margin-top:6px;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;font-weight:750;color:#53685d}input,select,textarea{font:inherit;padding:10px;border:1px solid #cbd9d0;border-radius:9px;width:100%;background:white;color:var(--ink)}textarea{min-height:65px}.btn{border:0;border-radius:9px;padding:10px 13px;background:#e7eee9;color:var(--ink);font-weight:700;cursor:pointer}.btn.red{background:#fff0f0;color:var(--red)}.btn.sm{font-size:12px;padding:6px 8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:740px;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e8efea;vertical-align:top}th{background:#f0f7f2;color:#476153;white-space:nowrap}td.num{text-align:right;white-space:nowrap}.muted{font-size:12px;color:var(--muted)}.pill{display:inline-block;border-radius:20px;background:var(--mint);color:var(--green);padding:3px 8px;font-size:11px}.warning{background:var(--amber);border:1px solid #f0dda5;border-radius:10px;padding:11px;font-size:13px;color:#72591a}.good{color:var(--green)}.bad{color:var(--red)}.hidden{display:none!important}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.categoryrow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf1ee}.foot{text-align:center;color:var(--muted);font-size:12px;padding:12px}.empty{color:var(--muted);padding:14px 0}.status{font-size:12px;padding:6px 9px;background:#f0f5f2;border-radius:8px;display:inline-block}
+@media(max-width:760px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.split{grid-template-columns:1fr}.panel{padding:13px}main{padding:12px 8px 28px}.nav{margin-right:-8px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.stat{padding:11px}}
+</style>
+
+<style>
+.cloud-card{background:#fff;border:1px solid #d8e6df;border-radius:14px;padding:16px;margin:16px 0;box-shadow:0 3px 12px #173d2a0a}.cloud-card h2{margin:0 0 8px;font-size:1.1rem}.cloud-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.cloud-card input{width:100%;box-sizing:border-box}.cloud-status{font-size:.92rem;margin:10px 0;padding:9px 12px;border-radius:8px;background:#f2f7f4;color:#244d3a}.cloud-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.cloud-small{font-size:.85rem;color:#52675d;line-height:1.45}.cloud-card .btn{cursor:pointer}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+<header><div class="inner"><h1>🐖 Manajemen Ternak Babi</h1><p>Keuangan · Data babi · Pakan · Penjualan · Laporan usaha · V23 — Siap sinkronisasi online setelah konfigurasi</p></div></header>
+<main>
+
+<section class="cloud-card" id="cloudPanel">
+ <h2>Sinkronisasi online V23</h2>
+ <p class="cloud-small">Versi ini sudah disiapkan untuk Supabase, tetapi belum online sampai alamat website dan database dikonfigurasi. Mulai dari laptop yang berisi data terbaru. Jangan mengirim data perangkat kosong ke cloud.</p>
+ <div class="cloud-grid">
+  <label>Supabase Project URL<input id="cloudUrl" type="url" placeholder="https://xxxx.supabase.co" autocomplete="url"></label>
+  <label>Supabase anon/public key<input id="cloudKey" type="password" placeholder="Kunci anon/public project" autocomplete="off"></label>
+  <label>Email untuk masuk<input id="cloudEmail" type="email" placeholder="email kamu" autocomplete="email"></label>
+ </div>
+ <div class="cloud-buttons">
+  <button class="btn" id="cloudConnect">Simpan konfigurasi</button>
+  <button class="btn" id="cloudLogin">Kirim tautan login</button>
+  <button class="btn secondary" id="cloudRefresh">Periksa status login</button>
+  <button class="btn secondary" id="cloudPull">Muat data dari cloud</button>
+  <button class="btn" id="cloudPush">Cadangkan data perangkat ke cloud</button>
+  <button class="btn secondary" id="cloudLogout">Keluar akun cloud</button>
+ </div>
+ <div class="cloud-status" id="cloudStatus">Belum terhubung. Data masih tersimpan lokal pada perangkat ini.</div>
+ <p class="cloud-small"><b>Penting:</b> setelah database dibuat dan website di-host, konfigurasi harus dimasukkan di setiap perangkat. Login dengan email yang sama. Gunakan “Cadangkan data perangkat ke cloud” pertama kali dari laptop yang memuat data benar. Di HP pilih “Muat data dari cloud”. Setelah itu setiap perubahan yang disimpan akan dikirim ke cloud saat koneksi tersedia.</p>
+</section>
+
+<div class="nav">
+<button class="active" data-page="dashboard">Ringkasan</button><button data-page="finance">Keuangan</button><button data-page="pigs">Data Babi</button><button data-page="feed">Stok & Pakan</button><button data-page="sales">Penjualan</button><button data-page="reports">Laporan</button><button data-page="backup">Sinkronisasi & Data</button>
+</div>
+<section id="dashboard" class="page active">
+<div class="cards">
+<div class="stat"><span>Modal masuk</span><strong id="dCapital">Rp0</strong></div><div class="stat"><span>Kas masuk lain + penjualan</span><strong id="dIncome">Rp0</strong></div><div class="stat"><span>Total pengeluaran</span><strong id="dExpense">Rp0</strong></div><div class="stat"><span>Selisih kas</span><strong id="dBalance">Rp0</strong></div><div class="stat"><span>Babi tercatat</span><strong id="dPigCount">0 ekor</strong></div>
+</div>
+<div class="cards" style="margin-top:11px">
+<div class="stat"><span>Nilai stok pakan (semua jenis)</span><strong id="dFeedValue">Rp0</strong></div><div class="stat"><span>Total penjualan</span><strong id="dSales">Rp0</strong></div><div class="stat"><span>Biaya operasional estimasi</span><strong id="dCost">Rp0</strong></div><div class="stat"><span>Hasil operasi estimasi*</span><strong id="dProfit">Rp0</strong></div><div class="stat"><span>Kerugian kematian (estimasi)</span><strong id="dDeathLoss">Rp0</strong></div>
+</div>
+<div class="warning" style="margin:14px 0"><b>Perhatian klasifikasi:</b> pembelian babi harus dicatat sebagai Pengeluaran → Pembelian babi, bukan Modal awal. Modal awal hanya uang yang dimasukkan ke usaha. *Selisih kas bukan laba akuntansi karena belum menghitung nilai babi hidup dan stok pakan sebagai aset.</div>
+<div class="split"><div class="panel"><h2>Pengeluaran per kategori</h2><div id="dashCats"></div></div><div class="panel"><h2>Aktivitas terbaru</h2><div id="dashRecent"></div></div></div>
+</section>
+<section id="finance" class="page">
+<div class="panel"><h2 id="finTitle">Tambah transaksi keuangan</h2><div class="warning" style="margin-bottom:12px"><b>Modal dan stok otomatis:</b> catat modal sebagai Kas masuk → Modal awal. Untuk pembelian babi, pilih kategori Pembelian babi, isi jumlah = jumlah ekor, satuan = ekor, berat total pada kolom khusus (jika diketahui), harga satuan, dan total; Data Babi dibuat otomatis. Jangan isi jumlah kg pada kolom jumlah jika yang dimaksud adalah jumlah ekor. Untuk pembelian pakan, pilih kategori Pakan/Ampas tahu/Sayur/Pakan tambahan. Jika jumlah dan satuan diisi, stok bahan akan bertambah otomatis. Pemakaian harian mengurangi stok otomatis.</div><form id="finForm"><input type="hidden" id="finId"><div class="grid">
+<div class="field"><label>Tanggal *</label><input id="finDate" type="date" required></div><div class="field"><label>Arus kas *</label><select id="finType"><option value="expense">Pengeluaran</option><option value="income">Kas masuk</option></select></div><div class="field"><label>Kategori *</label><select id="finCat"></select></div><div class="field"><label>Keterangan *</label><input id="finDesc" required placeholder="Misalnya ampas tahu"></div>
+<div class="field"><label>Jumlah</label><input id="finQty" type="number" min="0" step="any"></div><div class="field"><label>Satuan</label><input id="finUnit" placeholder="kg, karung, ekor"></div><div class="field"><label>Harga satuan (Rp)</label><input id="finPrice" type="number" min="0"></div><div class="field"><label id="finWeightLabel">Berat total babi (kg, khusus pembelian babi)</label><input id="finPigWeight" type="number" min="0" step="0.1" placeholder="Opsional"></div><div class="field"><label>Total (Rp) *</label><input id="finAmount" type="number" min="0" required><small class="muted" id="finAmountHelp">Pembelian babi: jumlah = ekor, satuan = ekor, lalu isi berat total (kg) dan harga/kg untuk hitung otomatis. Untuk Pelet 551: jumlah karung × 50 kg × harga per kg. Gunakan satuan persis “karung”.</small></div>
+</div><div class="field" style="margin-top:10px"><label>Catatan</label><textarea id="finNotes"></textarea></div><div class="actions"><button class="btn primary">Simpan transaksi</button><button class="btn" type="button" id="finClear">Kosongkan</button></div></form></div>
+<div class="panel"><h2>Riwayat keuangan</h2><div class="grid" style="margin-bottom:10px"><div class="field"><label>Cari</label><input id="finSearch" placeholder="Cari transaksi..."></div><div class="field"><label>Bulan</label><input id="finMonth" type="month"></div></div><div id="finTable" class="tablewrap"></div></div>
+</section>
+<section id="pigs" class="page">
+<div class="panel"><h2>Data babi otomatis</h2><div class="warning" style="margin-bottom:12px"><b>Tidak perlu input babi di halaman ini.</b> Kelompok babi dibuat otomatis dari transaksi <b>Keuangan → Pengeluaran → Pembelian babi</b>. Catat penjualan di menu Penjualan dan kematian di bagian Kematian; jumlah hidup akan dihitung otomatis. Jika perlu memperbaiki pembelian, edit transaksi asalnya di menu Keuangan.</div><div class="cards"><div class="stat"><span>Total babi hidup</span><strong id="pigLiveTotal">0 ekor</strong></div><div class="stat"><span>Total kelompok</span><strong id="pigGroupTotal">0</strong></div><div class="stat"><span>Total mati</span><strong id="pigDeadTotal">0 ekor</strong></div><div class="stat"><span>Total terjual</span><strong id="pigSoldTotal">0 ekor</strong></div></div><div class="actions"><button class="btn primary" type="button" onclick="setPage('finance')">+ Catat babi masuk</button><button class="btn" type="button" onclick="setPage('sales')">Catat penjualan / kematian</button></div></div>
+<div class="panel"><h2>Daftar babi</h2><div id="pigTable" class="tablewrap"></div></div>
+</section>
+<section id="feed" class="page">
+<div class="panel"><h2>Stok masuk otomatis dari Keuangan</h2><div class="warning" style="margin-bottom:12px">Tidak perlu input stok di halaman ini. Catat pembelian pakan di menu Keuangan. Untuk Pelet 551 dan Shinta BR21, stok karung dikonversi ke kg (default 50 kg/karung). Untuk ampas tahu dan sayur, stok boleh tetap dalam satuan karung sehingga pemakaian 1/2 karung dicatat sebagai 0,5 karung.</div></div>
+<div class="panel"><h2>Catat pemakaian harian</h2><form id="useFeedForm"><div class="grid"><div class="field"><label>Tanggal</label><input id="useDate" type="date" required></div><div class="field"><label>Jenis pakan</label><select id="useFeed" required></select></div><div class="field"><label id="useQtyLabel">Jumlah dipakai hari ini</label><input id="useQty" type="number" min="0.01" step="0.01" placeholder="Contoh: 0,5 untuk setengah karung" required></div><div class="field"><label>Untuk kelompok / kandang</label><input id="useGroup" placeholder="Misalnya semua babi"></div></div><div class="actions"><button class="btn primary">Simpan pemakaian harian</button></div></form><p class="muted">Catat hanya pemakaian harian. Pelet 551 dan Shinta BR21 dicatat dalam kg; ampas tahu dan sayur dapat dicatat dalam karung. Untuk setengah karung, masukkan 0,5. Pemakaian mengurangi stok dan dicatat sebagai biaya pakan.</p></div><div class="panel"><h2>Riwayat pemakaian harian</h2><div class="grid" style="margin-bottom:10px"><div class="field"><label>Filter tanggal</label><input id="useFilterDate" type="date"></div><div class="field"><label>Filter bahan</label><select id="useFilterFeed"><option value="">Semua bahan</option></select></div></div><div id="useTable" class="tablewrap"></div></div>
+<div class="panel"><h2>Stok pakan saat ini</h2><p class="muted">Stok dihitung ulang dari seluruh riwayat pembelian pakan di Keuangan, lalu dikurangi seluruh pemakaian harian. Pelet 551 per karung dikonversi ke kg (isi karung sesuai transaksi, default 50 kg).</p><div id="feedTable" class="tablewrap"></div></div>
+</section>
+<section id="sales" class="page">
+<div class="panel"><h2>Catat kematian babi</h2><form id="deathForm"><div class="grid">
+<div class="field"><label>Tanggal mati *</label><input id="deathDate" type="date" required></div>
+<div class="field"><label>ID / kelompok babi *</label><select id="deathPig" required><option value="">Pilih kelompok babi</option></select></div>
+<div class="field"><label>Jumlah mati (ekor) *</label><input id="deathQty" type="number" min="1" step="1" value="1" required></div>
+<div class="field"><label>Penyebab / catatan</label><input id="deathNotes" placeholder="Misalnya sakit, lemas, sebab lain"></div>
+</div><div class="actions"><button class="btn primary">Simpan kematian</button><button class="btn" type="button" id="deathClear">Kosongkan</button></div></form>
+<p class="muted">Kematian bukan pengeluaran kas baru. Program mencatatnya sebagai kerugian aset ternak (estimasi berdasarkan modal beli per ekor) dan mengurangi jumlah babi hidup.</p></div>
+<div class="panel"><h2>Riwayat kematian</h2><div id="deathTable" class="tablewrap"></div></div>
+<div class="panel"><h2 id="saleTitle">Catat penjualan babi</h2><form id="saleForm"><input type="hidden" id="saleId"><div class="grid">
+<div class="field"><label>Tanggal *</label><input id="saleDate" type="date" required></div><div class="field"><label>ID / kelompok babi *</label><input id="salePig" required list="pigGroupOptions" placeholder="Pilih/ketik ID kelompok"></div><datalist id="pigGroupOptions"></datalist><div class="field"><label>Jumlah ekor</label><input id="saleQty" type="number" min="0" step="1" value="1"></div><div class="field"><label>Berat terjual (kg)</label><input id="saleWeight" type="number" min="0" step="0.1"></div><div class="field"><label>Harga per kg (Rp)</label><input id="salePerKg" type="number" min="0"></div><div class="field"><label>Total penjualan (Rp) *</label><input id="saleTotal" type="number" min="0" required><small class="muted">Otomatis = berat terjual × harga per kg; total masih bisa disesuaikan jika ada pembulatan atau potongan.</small></div><div class="field"><label>Pembeli</label><input id="saleBuyer"></div><div class="field"><label>Catatan</label><input id="saleNotes"></div>
+</div><div class="actions"><button class="btn primary">Simpan penjualan</button><button class="btn" type="button" id="saleClear">Kosongkan</button></div></form><p class="muted">Penjualan dicatat sebagai pendapatan dan masuk ke perhitungan estimasi laba/rugi.</p></div>
+<div class="panel"><h2>Riwayat penjualan</h2><div id="saleTable" class="tablewrap"></div></div>
+</section>
+<section id="reports" class="page">
+<div class="panel"><h2>Laporan usaha</h2><div class="grid"><div class="field"><label>Dari tanggal</label><input id="reportFrom" type="date"></div><div class="field"><label>Sampai tanggal</label><input id="reportTo" type="date"></div><div class="field"><label> </label><button class="btn primary" id="runReport">Tampilkan laporan</button></div></div></div>
+<div class="cards"><div class="stat"><span>Kas masuk pada periode</span><strong id="rIncome">Rp0</strong></div><div class="stat"><span>Pengeluaran pada periode</span><strong id="rExpense">Rp0</strong></div><div class="stat"><span>Penjualan babi</span><strong id="rSales">Rp0</strong></div><div class="stat"><span>Selisih periode*</span><strong id="rProfit">Rp0</strong></div></div>
+<div class="panel" style="margin-top:14px"><h2>Rincian pengeluaran dan kerugian</h2><p class="muted">Pembelian pakan yang menambah stok tidak dihitung lagi sebagai biaya pemakaian. Biaya pakan muncul dari catatan pemakaian harian agar tidak dihitung dua kali.</p><div id="reportCats"></div><p class="muted">*Hasil operasi estimasi = kas masuk selain modal + penjualan − biaya operasional yang tercatat − kerugian kematian. Pembelian pakan yang masuk stok tidak dihitung sebagai biaya operasional sampai dipakai. Kartu pengeluaran menunjukkan uang keluar; rincian di bawah menunjukkan biaya/kerugian yang dihitung. Ini estimasi, bukan laporan akuntansi lengkap.</p></div>
+</section>
+<section id="backup" class="page">
+<div class="panel"><h2>Sinkronisasi laptop dan HP</h2><div class="warning"><b>Penting:</b> versi ini menyimpan data pada browser perangkat yang digunakan. Data belum otomatis tersinkron antarperangkat. Untuk sinkronisasi otomatis, aplikasi perlu dihubungkan ke database cloud dan dipasang pada alamat web yang sama. Jangan menganggap data sudah tersinkron sebelum koneksi cloud disiapkan.</div>
+<p>Untuk saat ini, gunakan ekspor dan impor cadangan untuk memindahkan data secara manual. Simpan file cadangan di tempat aman, lalu impor di perangkat lain. Hindari mengedit data di dua perangkat sekaligus sebelum digabungkan.</p><div class="actions"><button class="btn primary" id="exportJson">Unduh semua data (JSON)</button><button class="btn" id="exportCsv">Unduh transaksi keuangan (CSV/Excel)</button><label class="btn" for="importFile">Impor cadangan JSON</label><input class="hidden" type="file" id="importFile" accept=".json,application/json"></div></div>
+<div class="panel"><h2>Data awal dari buku catatan</h2><p id="seedStatus" class="muted"></p><button class="btn red" id="restoreSeed">Kembalikan transaksi keuangan awal</button><p class="muted">Fungsi ini mengganti seluruh transaksi keuangan dengan data awal dari foto. Transaksi yang terhubung ke stok/babi dapat menjadi tidak sinkron; gunakan hanya untuk memulai ulang data.</p></div>
+<div class="panel"><h2>Petunjuk menuju sinkronisasi otomatis</h2><ol><li>Aplikasi perlu di-hosting di web agar laptop dan HP membuka aplikasi yang sama.</li><li>Database cloud perlu dibuat dengan aturan akses pribadi, idealnya menggunakan akun masuk.</li><li>Setelah koneksi cloud disiapkan, data keuangan, babi, stok, dan penjualan dapat disinkronkan otomatis.</li></ol><p class="muted">Jangan menaruh password rahasia atau kunci admin database di file HTML publik.</p></div>
+</section>
+</main><div class="foot">Manajemen Ternak Babi V13 · Data tersimpan di browser/perangkat ini; ekspor cadangan secara berkala. Belum tersinkron otomatis antarperangkat.</div>
+<script>
+const $=id=>document.getElementById(id), money=n=>'Rp'+Number(n||0).toLocaleString('id-ID'), today=()=>new Date().toISOString().slice(0,10), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const finCategories=['Modal awal','Tambahan modal','Pembelian babi','Pakan','Ampas tahu','Sayur','Obat/vaksin','Vitamin','Pakan tambahan','Utilitas','Upah','Perlengkapan','Penjualan babi','Lainnya'];
+const seedRows=[
+['2026-08-22','expense','Pembelian babi','Babi',117,'kg',45000,5265000,'2 ekor; harga Rp45.000/kg'],
+['2026-08-25','expense','Pembelian babi','Babi',450,'kg',43000,19350000,'10 ekor; harga Rp43.000/kg'],
+['2026-08-25','expense','Obat/vaksin','Vaksin',1,'botol',1600000,1600000,'1 botol'],
+['2026-08-26','expense','Pembelian babi','Babi',10,'ekor',800000,8000000,'Harga tertulis Rp800.000/ekor; perlu diperiksa'],
+['2026-08-26','expense','Obat/vaksin','Vaksin',1,'botol',1600000,1600000,''],
+['2026-08-26','expense','Upah','Upah bongkar',1,'kali',100000,100000,''],
+['2026-08-24','expense','Pakan','Ampas tahu',2,'',15000,30000,'Jumlah/satuan kurang jelas'],
+['2026-08-25','expense','Pakan','Ampas tahu',5,'',30000,150000,''],
+['2026-08-28','expense','Utilitas','Token listrik',1,'transaksi',100000,100000,''],
+['2026-09-01','expense','Pakan','Ampas tahu',5,'',30000,150000,'Tanggal perlu diperiksa'],
+['2026-09-04','expense','Pakan tambahan','PGMIX mineral',1,'transaksi',300000,300000,''],
+['2026-09-06','income','Kas masuk','Kas masuk',1,'transaksi',2000000,2000000,''],
+['2026-09-07','expense','Pakan','Ampas tahu',6,'',30000,180000,''],
+['2026-09-08','expense','Obat/vaksin','Medoxy-LA',1,'botol',185000,185000,''],
+['2026-09-08','expense','Perlengkapan','Kapur barus',1,'papan',53000,53000,''],
+['2026-09-08','expense','Perlengkapan','Sunlight cuci',1,'transaksi',16000,16000,''],
+['2026-09-11','expense','Pakan','Ampas tahu',7,'',30000,210000,''],
+['2026-09-16','expense','Pakan','Ampas tahu',8,'',30000,240000,''],
+['2026-09-18','expense','Pakan','Pelet 551',1,'karung',585000,585000,''],
+['2026-09-09','expense','Pakan','Pelet 551',1,'karung',585000,585000,'Tanggal perlu diperiksa apakah transaksi terpisah'],
+['2026-09-17','expense','Utilitas','Token listrik',1,'transaksi',200000,200000,''],
+['2026-09-19','expense','Pakan','Ampas tahu',5,'',30000,150000,''],
+['2026-09-21','expense','Pakan','Ampas tahu',5,'',30000,150000,''],
+['2026-09-25','expense','Pakan','Ampas tahu',5,'',30000,150000,''],
+['2026-09-27','expense','Sayur','Sayur',2,'kg',30000,60000,''],
+['2026-09-28','income','Kas masuk','Kas masuk',1,'transaksi',2000000,2000000,''],
+['2026-09-28','expense','Pakan','Pelet Sinta BR21',1,'karung',485000,485000,'Tanggal perkiraan; perlu diperiksa'],
+['2026-09-29','expense','Pakan','Ampas tahu',7,'',30000,210000,''],
+['2026-10-01','expense','Pakan','Pelet 551',1,'karung',585000,585000,''],
+['2026-10-01','expense','Sayur','Sayur',2,'kg',30000,60000,''],
+['2026-10-03','expense','Pakan','Ampas tahu',6,'',30000,180000,''],
+['2026-10-04','expense','Sayur','Sayur',1,'kg',30000,30000,''],
+['2026-10-06','expense','Sayur','Sayur',1,'kg',30000,30000,''],
+['2026-10-06','expense','Utilitas','Token listrik',1,'transaksi',100000,100000,''],
+['2026-10-07','expense','Pakan','Ampas tahu',8,'',30000,240000,''],
+['2026-10-07','expense','Sayur','Sayur',1,'kg',30000,30000,'Tanggal perlu diperiksa'],
+['2026-10-09','expense','Sayur','Sayur',1,'kg',30000,30000,'Tanggal perlu diperiksa'],
+['2026-10-11','expense','Pakan','Ampas tahu',8,'',30000,240000,'Tanggal perlu diperiksa'],
+['2026-10-11','expense','Sayur','Sayur',3,'kg',25000,75000,'Tanggal perlu diperiksa'],
+['2026-10-12','expense','Pakan','Pelet 551',1,'karung',585000,585000,''],
+['2026-10-13','expense','Sayur','Sayur',3,'kg',25000,75000,''],
+['2026-10-13','income','Kas masuk','Kas masuk',1,'transaksi',1000000,1000000,''],
+['2026-10-14','expense','Pakan','Ampas tahu',6,'',30000,180000,''],
+['2026-10-14','expense','Sayur','Sayur',1,'kg',25000,25000,'']
+].map((r,i)=>({id:'seed-'+i,date:r[0],type:r[1],category:r[2],description:r[3],quantity:r[4],unit:r[5],unitPrice:r[6],amount:r[7],notes:r[8]}));
+let state;try{state=JSON.parse(localStorage.getItem('pig-manager-v14'))}catch(e){}
+const backupV13={"finance":[{"id":"f-1792034747012","date":"2026-08-22","type":"income","category":"Modal awal","description":"modal beli babi","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":35915000,"notes":""},{"id":"f-1792035798728","date":"2026-08-25","type":"expense","category":"Pembelian babi","description":"10 babi besar","quantity":10,"unit":"ekor","unitPrice":43000,"pigWeight":450,"amount":19350000,"notes":"","pigEffect":{"pigId":"pig-from-f-1792035798728"}},{"id":"f-1792044135170","date":"2026-08-22","type":"expense","category":"Pembelian babi","description":"babi induk 2A","quantity":1,"unit":"ekor","unitPrice":45000,"pigWeight":58.5,"amount":2632500,"notes":"","pigEffect":{"pigId":"pig-from-f-1792044135170"}},{"id":"f-1792044268176","date":"2026-05-22","type":"expense","category":"Pembelian babi","description":"babi induk 1A","quantity":1,"unit":"ekor","unitPrice":45000,"pigWeight":58.5,"amount":2632500,"notes":"","pigEffect":{"pigId":"pig-from-f-1792044268176"}},{"id":"f-1792044406770","date":"2026-08-26","type":"expense","category":"Pembelian babi","description":"10 anak babi","quantity":10,"unit":"ekor","unitPrice":0,"pigWeight":0,"amount":8000000,"notes":"","pigEffect":{"pigId":"pig-from-f-1792044406770"}},{"id":"f-1792044478024","date":"2026-08-25","type":"expense","category":"Obat/vaksin","description":"untuk 10 babi besar","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":1600000,"notes":""},{"id":"f-1792044504134","date":"2026-08-26","type":"expense","category":"Obat/vaksin","description":"untuk 10 babi kecil","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":1600000,"notes":""},{"id":"f-1792044529586","date":"2026-08-26","type":"expense","category":"Upah","description":"upah bongkar babi","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":100000,"notes":""},{"id":"f-1792044646211","date":"2026-09-06","type":"income","category":"Tambahan modal","description":"kas masuk","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":2000000,"notes":""},{"id":"f-1792044683742","date":"2026-09-28","type":"income","category":"Tambahan modal","description":"kas masuk","quantity":"","unit":"","unitPrice":0,"pigWeight":0,"amount":2000000,"notes":""}],"pigs":[{"id":"pig-from-f-1792035798728","tag":"10 babi besar","date":"2026-08-25","qty":10,"weight":450,"cost":19350000,"status":"Dipelihara","dead":0,"currentWeight":450,"notes":"Dibuat otomatis dari transaksi keuangan f-1792035798728","sourceFinanceId":"f-1792035798728"},{"id":"pig-from-f-1792044268176","tag":"babi induk 1A","date":"2026-05-22","qty":1,"weight":58.5,"cost":2632500,"status":"Dipelihara","dead":0,"currentWeight":58.5,"notes":"Dibuat otomatis dari transaksi keuangan f-1792044268176","sourceFinanceId":"f-1792044268176"},{"id":"pig-from-f-1792044135170","tag":"babi induk 2A","date":"2026-08-22","qty":1,"weight":58.5,"cost":2632500,"status":"Dipelihara","dead":0,"currentWeight":58.5,"notes":"Dibuat otomatis dari transaksi keuangan f-1792044135170","sourceFinanceId":"f-1792044135170"},{"id":"pig-from-f-1792044406770","tag":"10 anak babi","date":"2026-08-26","qty":10,"weight":0,"cost":8000000,"status":"Dipelihara","dead":0,"currentWeight":0,"notes":"Dibuat otomatis dari transaksi keuangan f-1792044406770","sourceFinanceId":"f-1792044406770"}],"feeds":[],"uses":[],"sales":[],"deaths":[{"id":"d-1792044755736","date":"2026-08-28","pig":"10 anak babi","qty":1,"notes":"mati sakit"},{"id":"d-1792044835034","date":"2026-08-29","pig":"10 anak babi","qty":1,"notes":"mati sakit"}]};
+if(!state||!Array.isArray(state.finance))state=JSON.parse(JSON.stringify(backupV13));if(!Array.isArray(state.uses))state.uses=[];if(!Array.isArray(state.deaths))state.deaths=[];
+let cloudClient=null,cloudUser=null,cloudSyncEnabled=false,cloudSaveTimer=null;
+function cloudMsg(t){const el=document.getElementById('cloudStatus');if(el)el.textContent=t}
+function save(){localStorage.setItem('pig-manager-v14',JSON.stringify(state));render();if(cloudClient&&cloudUser&&cloudSyncEnabled){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(()=>cloudUpsert(false),700)}}
+function cloudCfg(){return {url:(document.getElementById('cloudUrl').value||'').trim(),key:(document.getElementById('cloudKey').value||'').trim()}}
+function cloudStoreCfg(){const c=cloudCfg();if(!c.url.startsWith('https://')||!c.key){cloudMsg('URL atau anon/public key belum benar.');return false}localStorage.setItem('pig-manager-cloud-config',JSON.stringify(c));return true}
+function cloudInit(){try{const c=JSON.parse(localStorage.getItem('pig-manager-cloud-config')||'{}');document.getElementById('cloudUrl').value=c.url||'';document.getElementById('cloudKey').value=c.key||''}catch(e){}const c=cloudCfg();if(c.url&&c.key&&window.supabase){cloudClient=window.supabase.createClient(c.url,c.key);cloudClient.auth.getSession().then(({data,error})=>{if(error)cloudMsg('Konfigurasi tersimpan, tetapi status login belum terbaca: '+error.message);else if(data.session){cloudUser=data.session.user;cloudMsg('Login cloud aktif untuk '+cloudUser.email+'. Pilih Muat data dari cloud atau Cadangkan data perangkat.')}else cloudMsg('Konfigurasi tersimpan. Belum login cloud.')}).catch(e=>cloudMsg('Belum dapat menghubungi cloud: '+e.message))}}
+async function cloudConnect(){if(!cloudStoreCfg())return;try{cloudClient=window.supabase.createClient(cloudCfg().url,cloudCfg().key);const {data,error}=await cloudClient.auth.getSession();if(error)throw error;cloudUser=data.session?.user||null;cloudSyncEnabled=false;cloudMsg(cloudUser?'Terhubung dan login sebagai '+cloudUser.email+'. Pilih muat data atau kirim data perangkat.':'Konfigurasi tersimpan. Selanjutnya tekan Kirim tautan login.')}catch(e){cloudMsg('Gagal menghubungkan: '+e.message)}}
+async function cloudLogin(){if(!cloudClient&&!await cloudConnect())return;if(!cloudClient){cloudMsg('Simpan konfigurasi URL dan key dulu.');return}const email=document.getElementById('cloudEmail').value.trim();if(!email){cloudMsg('Masukkan email untuk login.');return}try{const {error}=await cloudClient.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});if(error)throw error;cloudMsg('Tautan login sudah diminta. Buka email di perangkat ini dan klik tautannya. Pastikan alamat website sudah didaftarkan di Supabase Redirect URLs.')}catch(e){cloudMsg('Login gagal: '+e.message)}}
+async function cloudCheck(){if(!cloudClient){await cloudConnect();if(!cloudClient)return}try{const {data,error}=await cloudClient.auth.getSession();if(error)throw error;cloudUser=data.session?.user||null;cloudMsg(cloudUser?'Login aktif: '+cloudUser.email+'.':'Belum login. Tekan Kirim tautan login.')}catch(e){cloudMsg('Gagal memeriksa login: '+e.message)}}
+async function cloudUpsert(show=true){if(!cloudClient||!cloudUser){if(show)cloudMsg('Login cloud belum aktif.');return}try{const {error}=await cloudClient.from('pig_farm_data').upsert({user_id:cloudUser.id,data:state,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)throw error;if(show)cloudMsg('Berhasil mencadangkan data perangkat ke cloud pada '+new Date().toLocaleString('id-ID')+'.')}catch(e){cloudMsg('Gagal mengirim data. Periksa SQL, izin tabel, URL, key, dan internet. Detail: '+e.message)}}
+async function cloudPull(){if(!cloudClient||!cloudUser){cloudMsg('Login cloud belum aktif.');return}if(!confirm('Data lokal perangkat ini akan diganti dengan data dari cloud. Pastikan sudah ada cadangan JSON. Lanjutkan?'))return;try{const {data,error}=await cloudClient.from('pig_farm_data').select('data,updated_at').eq('user_id',cloudUser.id).maybeSingle();if(error)throw error;if(!data){cloudMsg('Belum ada data cloud untuk akun ini. Dari laptop yang datanya benar, gunakan Cadangkan data perangkat ke cloud.');return}if(!data.data||!Array.isArray(data.data.finance))throw new Error('Format data cloud tidak valid');state=data.data;if(!Array.isArray(state.uses))state.uses=[];if(!Array.isArray(state.deaths))state.deaths=[];localStorage.setItem('pig-manager-v14',JSON.stringify(state));cloudSyncEnabled=true;render();cloudMsg('Data cloud dimuat. Terakhir diperbarui: '+new Date(data.updated_at).toLocaleString('id-ID')+'. Perubahan berikutnya akan disinkronkan saat disimpan.')}catch(e){cloudMsg('Gagal memuat data cloud: '+e.message)}}
+async function cloudPush(){if(!cloudClient||!cloudUser){cloudMsg('Login cloud belum aktif.');return}if(!confirm('Ini akan mengganti data cloud dengan data yang ada di perangkat ini. Pastikan ini perangkat dengan data paling lengkap. Lanjutkan?'))return;cloudSyncEnabled=true;await cloudUpsert(true)}
+async function cloudLogout(){if(cloudClient){await cloudClient.auth.signOut()}cloudUser=null;cloudSyncEnabled=false;cloudMsg('Sudah keluar dari akun cloud. Data lokal di perangkat ini tidak dihapus.')}
+document.getElementById('cloudConnect').addEventListener('click',cloudConnect);document.getElementById('cloudLogin').addEventListener('click',cloudLogin);document.getElementById('cloudRefresh').addEventListener('click',cloudCheck);document.getElementById('cloudPull').addEventListener('click',cloudPull);document.getElementById('cloudPush').addEventListener('click',cloudPush);document.getElementById('cloudLogout').addEventListener('click',cloudLogout);
+cloudInit();
+function selectFill(id,arr){$(id).innerHTML=arr.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}
+function setPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+function sum(arr,key='amount'){return arr.reduce((s,x)=>s+Number(x[key]||0),0)}
+function sortDate(arr){return [...arr].sort((a,b)=>(b.date||'').localeCompare(a.date||''))}
+function dateText(d){return d?new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—'}
+function table(rows,headers,renderRow){return rows.length?`<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(renderRow).join('')}</tbody></table>`:'<div class="empty">Belum ada data.</div>'}
+function actionBtns(type,id){return `<button class="btn sm" onclick="editItem('${type}','${id}')">Edit</button> <button class="btn sm red" onclick="deleteItem('${type}','${id}')">Hapus</button>`}
+function renderFinance(){let q=($('finSearch').value||'').toLowerCase(),m=$('finMonth').value||'';let rows=sortDate(state.finance.filter(x=>(!q||(x.description+' '+x.notes+' '+x.category).toLowerCase().includes(q))&&(!m||x.date.startsWith(m))));$('finTable').innerHTML=table(rows,['Tanggal','Kategori','Keterangan','Jumlah','Nilai','Aksi'],x=>`<tr><td>${dateText(x.date)}</td><td>${esc(x.category)}</td><td><b>${esc(x.description)}</b><div class="muted">${esc(x.notes||'')}</div></td><td>${x.quantity??''} ${esc(x.unit||'')}</td><td class="num ${x.type==='income'?'good':'bad'}">${x.type==='income'?'+':'−'}${money(x.amount)}</td><td>${actionBtns('finance',x.id)}</td></tr>`)}
+function pigDeadCount(x){const qty=Math.max(0,Number(x.qty||0));if(x.status==='Mati'||x.status==='Semua mati')return qty;const logged=state.deaths.filter(d=>normalizeName(d.pig)===normalizeName(x.tag)).reduce((n,d)=>n+Number(d.qty||0),0);return Math.min(qty,Math.max(Number(x.dead||0),logged))}
+function pigSoldCount(x){return state.sales.filter(s=>normalizeName(s.pig)===normalizeName(x.tag)).reduce((n,s)=>n+Number(s.qty||0),0)}
+function pigAliveCount(x){if(x.status==='Mati'||x.status==='Semua mati'||x.status==='Habis dijual')return 0;return Math.max(0,Number(x.qty||0)-pigDeadCount(x)-pigSoldCount(x))}
+function renderPigs(){
+ const live=state.pigs.reduce((n,x)=>n+pigAliveCount(x),0),dead=state.pigs.reduce((n,x)=>n+pigDeadCount(x),0),sold=state.pigs.reduce((n,x)=>n+pigSoldCount(x),0);
+ if($('pigLiveTotal'))$('pigLiveTotal').textContent=live+' ekor';if($('pigGroupTotal'))$('pigGroupTotal').textContent=state.pigs.length;if($('pigDeadTotal'))$('pigDeadTotal').textContent=dead+' ekor';if($('pigSoldTotal'))$('pigSoldTotal').textContent=sold+' ekor';
+ $('pigTable').innerHTML=table(sortDate(state.pigs),['ID / kelompok','Tanggal masuk','Jumlah awal','Mati','Terjual','Masih hidup','Berat masuk','Modal beli','Status'],x=>`<tr><td><b>${esc(x.tag)}</b><div class="muted">${esc(x.notes||'')}</div></td><td>${dateText(x.date)}</td><td>${x.qty}</td><td class="bad">${pigDeadCount(x)>0?'−'+pigDeadCount(x):'0'}</td><td class="bad">${pigSoldCount(x)>0?'−'+pigSoldCount(x):'0'}</td><td><b>${pigAliveCount(x)} ekor</b></td><td>${x.weight||0} kg</td><td class="num">${money(x.cost)}</td><td><span class="pill">${esc((pigAliveCount(x)===0&&pigSoldCount(x)>0)?'Habis dijual':(pigAliveCount(x)===0&&pigDeadCount(x)>0?'Tidak ada babi hidup':'Dipelihara'))}</span></td></tr>`)
+}
+function renderFeeds(){const totalValue=state.feeds.reduce((n,x)=>n+(Number(x.stock||0)*Number(x.price||0)),0);const body=state.feeds.map(x=>`<tr><td><b>${esc(x.name)}</b><div class="muted">Stok dari pembelian Keuangan</div></td><td>${Number(x.stock||0).toLocaleString('id-ID')} ${esc(x.unit)}</td><td>${money(x.price)}</td><td>${money(Number(x.stock||0)*Number(x.price||0))}</td><td>${Number(x.stock||0)<=Number(x.min||0)?'<span class="bad">Stok rendah</span>':'Aman'}</td></tr>`).join('');$('feedTable').innerHTML=`<table><thead><tr><th>Nama bahan</th><th>Stok tersisa</th><th>Harga per kg/satuan</th><th>Nilai stok</th><th>Peringatan</th></tr></thead><tbody>${body||'<tr><td colspan="5">Belum ada stok pakan.</td></tr>'}<tr><th colspan="3">TOTAL NILAI STOK SEMUA PAKAN</th><th>${money(totalValue)}</th><th></th></tr></tbody></table>`;$('useFeed').innerHTML='<option value="">Pilih pakan</option>'+state.feeds.map(x=>`<option value="${x.id}">${esc(x.name)} — stok ${x.stock} ${esc(x.unit)}</option>`).join('');$('useFilterFeed').innerHTML='<option value="">Semua bahan</option>'+state.feeds.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');$('useFeed').onchange=()=>{const f=state.feeds.find(x=>x.id===$('useFeed').value);$('useQtyLabel').textContent=f?`Jumlah dipakai hari ini (${f.unit})`:'Jumlah dipakai hari ini';$('useQty').placeholder=f&&normalizeName(f.unit)==='karung'?'Contoh: 0,5 untuk setengah karung':'Masukkan jumlah dalam '+(f?.unit||'satuan stok')};renderUses()}
+function renderUses(){if(!$('useTable'))return;const d=$('useFilterDate').value||'',f=$('useFilterFeed').value||'';const rows=[...state.uses].filter(x=>(!d||x.date===d)&&(!f||x.feedId===f)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));$('useTable').innerHTML=table(rows,['Tanggal','Bahan','Jumlah dipakai','Kelompok/kandang','Estimasi biaya','Aksi'],x=>`<tr><td>${dateText(x.date)}</td><td><b>${esc(x.name)}</b></td><td>${x.qty} ${esc(x.unit)}</td><td>${esc(x.group||'—')}</td><td>${money(Number(x.qty)*Number(x.unitPrice||0))}</td><td><button class="btn sm red" onclick="deleteUse('${x.id}')">Hapus</button></td></tr>`)}
+window.deleteUse=id=>{const u=state.uses.find(x=>x.id===id);if(!u||!confirm('Hapus catatan pemakaian? Stok akan dikembalikan dan biaya terkait dihapus.'))return;const feed=state.feeds.find(x=>x.id===u.feedId);if(feed)feed.stock=Number(feed.stock)+Number(u.qty);state.uses=state.uses.filter(x=>x.id!==id);state.finance=state.finance.filter(x=>x.id!=='fu-'+u.id.slice(2));save()};
+function renderDeaths(){$('deathPig').innerHTML='<option value="">Pilih kelompok babi</option>'+state.pigs.filter(x=>pigAliveCount(x)>0).map(x=>`<option value="${esc(x.tag)}">${esc(x.tag)} — ${pigAliveCount(x)} ekor hidup</option>`).join('');$('deathTable').innerHTML=table(sortDate(state.deaths),['Tanggal','Kelompok','Mati','Catatan','Aksi'],x=>`<tr><td>${dateText(x.date)}</td><td>${esc(x.pig)}</td><td class="bad">−${x.qty} ekor</td><td>${esc(x.notes||'')}</td><td><button class="btn sm red" onclick="deleteDeath('${x.id}')">Hapus</button></td></tr>`)}
+window.deleteDeath=id=>{const d=state.deaths.find(x=>x.id===id);if(!d)return;if(!confirm('Hapus catatan kematian ini? Jumlah babi hidup akan dihitung ulang.'))return;state.deaths=state.deaths.filter(x=>x.id!==id);save()};
+function renderSales(){$('pigGroupOptions').innerHTML=state.pigs.map(x=>`<option value="${esc(x.tag)}"></option>`).join('');$('saleTable').innerHTML=table(sortDate(state.sales),['Tanggal','Babi/kelompok','Ekor','Berat','Total','Pembeli','Aksi'],x=>`<tr><td>${dateText(x.date)}</td><td>${esc(x.pig)}</td><td>${x.qty||0}</td><td>${x.weight||0} kg</td><td class="num good">${money(x.total)}</td><td>${esc(x.buyer||'')}</td><td>${actionBtns('sale',x.id)}</td></tr>`)}
+function renderDashboard(){
+ const capital=sum(state.finance.filter(x=>x.type==='income'&&(x.category==='Modal awal'||x.category==='Tambahan modal'))), otherIncome=sum(state.finance.filter(x=>x.type==='income'&&x.category!=='Modal awal'&&x.category!=='Tambahan modal'))+sum(state.sales,'total'), inc=capital+otherIncome, exp=sum(state.finance.filter(x=>x.type==='expense'&&!x.nonCash)),operatingExpense=sum(state.finance.filter(x=>x.type==='expense'&&!x.pigEffect&&!x.stockEffect)),bal=inc-exp;
+ $('dCapital').textContent=money(capital);$('dIncome').textContent=money(otherIncome);$('dExpense').textContent=money(exp);$('dBalance').textContent=money(bal);$('dBalance').className=bal<0?'bad':'good';
+ $('dPigCount').textContent=state.pigs.reduce((s,x)=>s+pigAliveCount(x),0)+' ekor';
+ $('dFeedValue').textContent=money(state.feeds.reduce((n,x)=>n+(Number(x.stock||0)*Number(x.price||0)),0));$('dSales').textContent=money(sum(state.sales,'total'));$('dCost').textContent=money(operatingExpense);const deathLoss=state.deaths.reduce((total,d)=>{const g=state.pigs.find(p=>normalizeName(p.tag)===normalizeName(d.pig));return total+(g&&Number(g.qty)>0?(Number(g.cost||0)/Number(g.qty))*Number(d.qty):0)},0);$('dDeathLoss').textContent=money(deathLoss);const operatingResult=otherIncome-operatingExpense-deathLoss;$('dProfit').textContent=money(operatingResult);$('dProfit').className=operatingResult<0?'bad':'good';
+ let cats={};state.finance.filter(x=>x.type==='expense'&&!x.stockEffect).forEach(x=>cats[x.category]=(cats[x.category]||0)+Number(x.amount));$('dashCats').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="categoryrow"><span>${esc(k)}</span><b>${money(v)}</b></div>`).join('')||'<div class="empty">Belum ada pengeluaran.</div>';
+ const recent=[...state.finance.map(x=>({...x,label:x.description,value:x.amount,sign:x.type==='income'?'+':'−'})),...state.sales.map(x=>({...x,label:'Penjualan: '+x.pig,value:x.total,sign:'+'}))].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,7);
+ $('dashRecent').innerHTML=recent.length?recent.map(x=>`<div class="categoryrow"><div><b>${esc(x.label)}</b><div class="muted">${dateText(x.date)}</div></div><b class="${x.sign==='+'?'good':'bad'}">${x.sign}${money(x.value)}</b></div>`).join(''):'<div class="empty">Belum ada aktivitas.</div>';
+}
+function renderReport(){let from=$('reportFrom').value||'0000-01-01',to=$('reportTo').value||'9999-12-31',within=x=>x.date>=from&&x.date<=to;let f=state.finance.filter(within),s=state.sales.filter(within),d=state.deaths.filter(within),inc=sum(f.filter(x=>x.type==='income'&&x.category!=='Modal awal'&&x.category!=='Tambahan modal')),capital=sum(f.filter(x=>x.type==='income'&&(x.category==='Modal awal'||x.category==='Tambahan modal'))),exp=sum(f.filter(x=>x.type==='expense'&&!x.nonCash)),operatingExpense=sum(f.filter(x=>x.type==='expense'&&!x.pigEffect&&!x.stockEffect)),sales=sum(s,'total'),deathLoss=d.reduce((total,death)=>{let g=state.pigs.find(p=>normalizeName(p.tag)===normalizeName(death.pig));return total+(g&&Number(g.qty)>0?(Number(g.cost||0)/Number(g.qty))*Number(death.qty||0):0)},0),profit=inc+sales-operatingExpense-deathLoss;$('rIncome').textContent=money(inc);$('rExpense').textContent=money(exp);$('rSales').textContent=money(sales);$('rProfit').textContent=money(profit);$('rProfit').className=profit<0?'bad':'good';let cats={};f.filter(x=>x.type==='expense'&&!x.stockEffect).forEach(x=>cats[x.category]=(cats[x.category]||0)+Number(x.amount));if(deathLoss>0)cats['Kerugian kematian babi (estimasi)']=deathLoss;$('reportCats').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="categoryrow"><span>${esc(k)}</span><b>${money(v)}</b></div>`).join('')||'<div class="empty">Tidak ada pengeluaran atau kerugian pada periode ini.</div>'}
+function render(){renderDashboard();renderFinance();renderPigs();renderFeeds();renderDeaths();renderSales();renderReport();$('seedStatus').textContent=`Data awal dari foto: ${seedRows.length} transaksi keuangan. Data saat ini: ${state.finance.length} transaksi, ${state.pigs.length} data babi, ${state.feeds.length} jenis pakan, ${state.sales.length} penjualan.`}
+function resetForm(ids){ids.forEach(id=>$(id).value='');if(ids.includes('finDate'))$('finDate').value=today();if(ids.includes('feedMin'))$('feedMin').value=0;if(ids.includes('useDate'))$('useDate').value=today();if(ids.includes('saleDate'))$('saleDate').value=today()}
+selectFill('finCat',finCategories);resetForm(['finDate','useDate','saleDate']);updateFinanceFieldHelp();
+function normalizeName(s){return String(s||'').trim().toLowerCase().replace(/\\s+/g,' ')}
+function isKgBasedFeed(name){const n=normalizeName(name);return /551/.test(n)||/pelet|pellet/.test(n)||/shinta\s*br\s*21|br\s*21/.test(n)}
+function unitIsSack(unit){return /^(\d+\s*)?(karung|sak|sack)$/.test(normalizeName(unit))}
+function addPurchaseStock(tx){
+ if(tx.type!=='expense'||!['Pakan','Ampas tahu','Sayur','Pakan tambahan'].includes(tx.category)||!tx.description||normalizeName(tx.description).startsWith('pemakaian ')||!(Number(tx.quantity)>0)||!tx.unit)return;
+ const sourceUnit=normalizeName(tx.unit),isSack=unitIsSack(sourceUnit),isKgFeed=isKgBasedFeed(tx.description);
+ const baseUnit=(isSack&&isKgFeed)?'kg':tx.unit;
+ const packSize=(isSack&&isKgFeed)?(Number(tx.pigWeight)>0?Number(tx.pigWeight):50):1;
+ let feed=state.feeds.find(f=>normalizeName(f.name)===normalizeName(tx.description)&&(normalizeName(f.unit)===normalizeName(baseUnit)||(isSack&&isKgFeed&&normalizeName(f.unit)==='kg')));
+ if(!feed){feed={id:'fd-auto-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),name:tx.description,stock:0,unit:baseUnit,price:0,packSize:isKgFeed?packSize:1,min:0,notes:'Dibuat otomatis dari pembelian di Keuangan.'};state.feeds.push(feed)}
+ const oldStock=Number(feed.stock||0),oldPrice=Number(feed.price||0),packs=isSack&&normalizeName(feed.unit)==='kg',factor=packs?Number(feed.packSize||50):1,incomingQty=Number(tx.quantity)*factor,incomingPrice=Number(tx.amount||0)/Math.max(0.000001,incomingQty);
+ feed.stock=oldStock+incomingQty;if(incomingPrice>0)feed.price=oldStock>0?((oldStock*oldPrice)+(incomingQty*incomingPrice))/feed.stock:incomingPrice;
+ tx.stockEffect={feedId:feed.id,qty:incomingQty,sourceQty:Number(tx.quantity),sourceUnit:tx.unit,converted:packs};
+}
+function canReversePurchaseStock(tx){
+ if(!tx||!tx.stockEffect)return true;
+ const feed=state.feeds.find(f=>f.id===tx.stockEffect.feedId);
+ if(!feed)return true;
+ const remaining=Number(feed.stock||0),qty=Number(tx.stockEffect.qty||0);
+ if(remaining<qty){alert('Transaksi pembelian ini tidak bisa diedit/dihapus karena sebagian stok sudah dipakai. Catat koreksi stok atau pulihkan pemakaian terkait terlebih dahulu.');return false}
+ return true;
+}
+function reversePurchaseStock(tx){
+ if(!tx||!tx.stockEffect)return;
+ const feed=state.feeds.find(f=>f.id===tx.stockEffect.feedId);
+ if(feed)feed.stock=Number(feed.stock||0)-Number(tx.stockEffect.qty||0);
+ tx.stockEffect=null;
+}
+
+// V21: rekonsiliasi stok dari seluruh riwayat pembelian dan pemakaian agar transaksi versi lama ikut dihitung.
+function rebuildFeedInventoryFromHistory(){
+ const allowed=new Set(['Pakan','Ampas tahu','Sayur','Pakan tambahan']);
+ const oldFeeds=Array.isArray(state.feeds)?state.feeds:[];
+ const rebuilt=[];
+ const getOrCreate=(name,unit)=>{
+   let f=rebuilt.find(z=>normalizeName(z.name)===normalizeName(name)&&normalizeName(z.unit)===normalizeName(unit));
+   if(!f){
+     const old=oldFeeds.find(z=>normalizeName(z.name)===normalizeName(name));
+     f={id:old?.id||('fd-rebuilt-'+normalizeName(name).replace(/[^a-z0-9]+/g,'-')+'-'+rebuilt.length),name,stock:0,unit,price:0,packSize:50,min:Number(old?.min||0),notes:old?.notes||'Dihitung dari seluruh riwayat pembelian dan pemakaian.'};
+     rebuilt.push(f);
+   }
+   return f;
+ };
+ // Hitung ulang dari sumber transaksi, bukan menambahkan ke stok lama, agar tidak dobel setiap aplikasi dibuka.
+ const purchases=state.finance.filter(tx=>tx.type==='expense'&&allowed.has(tx.category)&&!tx.linkedUseId&&!normalizeName(tx.description).startsWith('pemakaian ')&&Number(tx.quantity)>0&&String(tx.unit||'').trim());
+ for(const tx of purchases){
+   const name=String(tx.description||'').trim();
+   const unitRaw=String(tx.unit||'').trim();
+   const unitNorm=normalizeName(unitRaw);
+   const isSack=unitIsSack(unitNorm);
+   const isKgFeed=isKgBasedFeed(name);
+   const converted=isSack&&isKgFeed;
+   const unit=converted?'kg':unitRaw;
+   const f=getOrCreate(name,unit);
+   const packSize=converted?(Number(tx.pigWeight)>0?Number(tx.pigWeight):50):1;
+   const incoming=Number(tx.quantity)*(converted?packSize:1);
+   if(!(incoming>0))continue;
+   const cost=Number(tx.amount||0);
+   const oldQty=Number(f.stock||0),oldValue=oldQty*Number(f.price||0);
+   f.stock=oldQty+incoming;
+   if(cost>0)f.price=(oldValue+cost)/f.stock;
+   if(converted)f.packSize=packSize;
+   tx.stockEffect={feedId:f.id,qty:incoming,sourceQty:Number(tx.quantity),sourceUnit:unitRaw,converted};
+ }
+ // Pastikan bahan yang sudah ada tetap terlihat, tetapi stoknya berasal dari riwayat transaksi.
+ for(const old of oldFeeds){
+   if(!rebuilt.some(f=>normalizeName(f.name)===normalizeName(old.name))){
+     rebuilt.push({...old,stock:0,price:Number(old.price||0)});
+   }
+ }
+ // Pemakaian harian mengurangi stok tepat satu kali dan ditautkan ulang berdasarkan nama bahan.
+ for(const use of state.uses||[]){
+   let f=rebuilt.find(z=>normalizeName(z.name)===normalizeName(use.name)&&normalizeName(z.unit)===normalizeName(use.unit));
+   if(!f)f=rebuilt.find(z=>normalizeName(z.name)===normalizeName(use.name));
+   if(!f){f=getOrCreate(String(use.name||'Pakan'),String(use.unit||'kg'));}
+   use.feedId=f.id;
+   use.unit=f.unit;
+   use.unitPrice=Number(f.price||use.unitPrice||0);
+   f.stock=Number(f.stock||0)-Number(use.qty||0);
+ }
+ state.feeds=rebuilt;
+ try{localStorage.setItem('pig-manager-v14',JSON.stringify(state));}catch(e){}
+}
+
+function addPigPurchase(tx){
+ if(tx.type!=='expense'||tx.category!=='Pembelian babi'||!(Number(tx.quantity)>0))return;
+ const unit=normalizeName(tx.unit), notes=String(tx.notes||'');
+ let qty=0,weight=Number(tx.pigWeight||0);
+ if(['ekor','ekor babi'].includes(unit)){qty=Math.floor(Number(tx.quantity));}
+ else if(['kg','kilogram'].includes(unit)){
+   weight=Number(tx.quantity)||weight;
+   const match=notes.match(/(\d+)\s*ekor/i);
+   if(match)qty=Number(match[1]);
+ } else if(unit===''){
+   // For new entries with a known number of pigs, use the dedicated weight field.
+   qty=Math.floor(Number(tx.quantity));
+ } else {
+   const match=notes.match(/(\d+)\s*ekor/i);
+   if(match)qty=Number(match[1]);
+ }
+ const pigId='pig-from-'+tx.id;
+ state.pigs=state.pigs.filter(p=>p.id!==pigId);
+ if(!(qty>0)) { tx.pigEffect=null; return; }
+ let tag=String(tx.description||'Kelompok babi').trim();
+ const duplicate=state.pigs.some(p=>normalizeName(p.tag)===normalizeName(tag)&&p.id!==pigId);
+ if(duplicate)tag=tag+' - '+String(tx.date||'').replaceAll('-','');
+ const pig={id:pigId,tag,date:tx.date,qty,weight,cost:Number(tx.amount||0),status:'Dipelihara',dead:0,currentWeight:weight,notes:'Dibuat otomatis dari transaksi keuangan '+tx.id,sourceFinanceId:tx.id};
+ state.pigs.push(pig);tx.pigEffect={pigId:pig.id};
+}
+function reversePigPurchase(tx){
+ if(!tx||!tx.pigEffect)return;
+ const pig=state.pigs.find(p=>p.id===tx.pigEffect.pigId);
+ if(pig&&(pigDeadCount(pig)>0||pigSoldCount(pig)>0)){alert('Pembelian tidak bisa diubah/dihapus karena kelompok sudah memiliki catatan kematian atau penjualan. Perbaiki transaksi terkait terlebih dahulu.');return false}
+ state.pigs=state.pigs.filter(p=>p.id!==tx.pigEffect.pigId);
+ tx.pigEffect=null;return true;
+}
+// Rekonsiliasi kelompok otomatis dari transaksi pembelian, termasuk data dari versi lama.
+function reconcilePigGroups(){
+ const manual=state.pigs.filter(p=>!p.sourceFinanceId);
+ const derived=[];
+ for(const tx of state.finance){
+   if(tx.type==='expense'&&tx.category==='Pembelian babi'&&Number(tx.quantity)>0){
+     const old=state.pigs.find(p=>p.sourceFinanceId===tx.id);
+     const before=state.pigs; state.pigs=derived;
+     addPigPurchase(tx);
+     const made=state.pigs.find(p=>p.id==='pig-from-'+tx.id); if(made){if(old){made.dead=old.dead||0;made.currentWeight=old.currentWeight||made.currentWeight;made.status=old.status||made.status;} derived.push(made);}
+     state.pigs=before;
+   }
+ }
+ state.pigs=[...manual,...derived.filter((p,i,a)=>a.findIndex(q=>q.id===p.id)===i)];
+}
+reconcilePigGroups();
+function updateFinanceFieldHelp(){
+ const category=$('finCat').value, name=$('finDesc').value||'';
+ const weightLabel=$('finWeightLabel'),help=$('finAmountHelp'),unit=normalizeName($('finUnit').value);
+ if(['Pakan','Ampas tahu','Sayur','Pakan tambahan'].includes(category)){
+   const kgFeed=isKgBasedFeed(name);
+   weightLabel.textContent=kgFeed?'Isi per karung (kg; default 50 kg)':'Kolom tambahan tidak dipakai untuk bahan ini';
+   $('finPigWeight').placeholder=kgFeed?'50 untuk karung 50 kg':'Tidak perlu diisi';
+   help.textContent=kgFeed?'Untuk Pelet 551/Shinta BR21, stok disimpan dalam kg. Jika beli 1 karung 50 kg, masukkan jumlah 1, satuan karung, harga per kg; total otomatis 50 × harga/kg.':'Untuk ampas tahu/sayur, stok disimpan dalam karung jika satuannya karung. Harga satuan adalah harga per karung; total = jumlah karung × harga per karung. Pemakaian 1/2 karung dicatat 0,5.';
+ }else{
+   weightLabel.textContent='Berat total babi (kg, khusus pembelian babi)';
+   $('finPigWeight').placeholder='Opsional';
+   help.textContent='Pembelian babi: jumlah = ekor, satuan = ekor, lalu isi berat total (kg) dan harga/kg untuk hitung otomatis. Jika harga per ekor, isi harga/ekor. Pembelian borongan bisa langsung isi total dan pastikan jumlah ekor tetap diisi.';
+ }
+}
+function calculateFinanceTotal(){
+ const category=$('finCat').value,qty=Number($('finQty').value||0),unitPrice=Number($('finPrice').value||0),unitText=$('finUnit').value.trim().toLowerCase();
+ const amount=$('finAmount');
+ if(category==='Pembelian babi'&&unitPrice>0){
+   const dedicatedWeight=Number($('finPigWeight').value||0);
+   const weightFromUnit=unitText!==''&&Number.isFinite(Number(unitText))&&Number(unitText)>0?Number(unitText):0;
+   const weight=dedicatedWeight>0?dedicatedWeight:weightFromUnit;
+   if(weight>0){amount.value=Math.round(weight*unitPrice)}
+   else if(qty>0&&['ekor','ekor babi',''].includes(unitText)){amount.value=Math.round(qty*unitPrice)}
+ } else if(['Pakan','Ampas tahu','Sayur','Pakan tambahan'].includes(category)&&qty>0&&unitPrice>0){
+   if(unitIsSack(unitText)){
+     if(isKgBasedFeed($('finDesc').value)){
+       const kgPerSack=Number($('finPigWeight').value||50);
+       if(kgPerSack>0)amount.value=Math.round(qty*kgPerSack*unitPrice);
+     }else amount.value=Math.round(qty*unitPrice);
+   }else if(['kg','kilogram'].includes(unitText)) amount.value=Math.round(qty*unitPrice);
+ }
+ updateFinanceFieldHelp();
+}
+$('finQty').addEventListener('input',calculateFinanceTotal);
+$('finPrice').addEventListener('input',calculateFinanceTotal);
+$('finPigWeight').addEventListener('input',calculateFinanceTotal);
+$('finUnit').addEventListener('input',()=>{updateFinanceFieldHelp();calculateFinanceTotal()});
+$('finCat').addEventListener('change',()=>{updateFinanceFieldHelp();calculateFinanceTotal()});
+$('finDesc').addEventListener('input',()=>{updateFinanceFieldHelp();calculateFinanceTotal()});
+$('finForm').onsubmit=e=>{e.preventDefault();let id=$('finId').value;let existing=id?state.finance.find(a=>a.id===id):null;let x={id:id||'f-'+Date.now(),date:$('finDate').value,type:$('finType').value,category:$('finCat').value,description:$('finDesc').value.trim(),quantity:$('finQty').value===''?'':Number($('finQty').value),unit:$('finUnit').value.trim(),unitPrice:Number($('finPrice').value||0),pigWeight:Number($('finPigWeight').value||0),amount:Number($('finAmount').value||0),notes:$('finNotes').value.trim()};if(x.category==='Pembelian babi'&&x.unit!==''&&Number.isFinite(Number(x.unit))&&Number(x.unit)>0){if(!x.pigWeight)x.pigWeight=Number(x.unit);x.unit='ekor';}if(!x.description||!x.date||!Number.isFinite(x.amount)||x.amount<0){alert('Lengkapi tanggal, keterangan, dan jumlah yang valid.');return;}if(x.category==='Pembelian babi'&&x.type==='expense'&&x.quantity!==''&&!(x.quantity>0)){alert('Jumlah ekor harus lebih dari nol.');return;}if(x.category==='Pembelian babi'&&x.type==='expense'&&x.unit.trim()!==''&&!Number.isFinite(Number(x.unit))&&x.unit.trim().toLowerCase()!=='ekor'){alert('Untuk pembelian babi, isi satuan “ekor” atau masukkan berat total (kg).');return;}if(x.category==='Pembelian babi'&&x.type==='expense'&&x.unit.trim()!==''&&Number.isFinite(Number(x.unit))&&Number(x.unit)>0&&!(Number(x.quantity)>0)){alert('Jika mengisi berat total, isi juga jumlah ekor agar Data Babi bisa dibuat otomatis.');return;}if(x.category==='Pembelian babi'&&x.type==='expense'&&x.amount<=0){alert('Isi total modal pembelian babi lebih dari Rp0.');return;}if(x.category==='Pembelian babi'&&x.type==='expense'&&state.pigs.some(p=>normalizeName(p.tag)===normalizeName(x.description)&&p.sourceFinanceId!==x.id)){alert('Nama/ID kelompok babi sudah dipakai. Gunakan ID kelompok yang unik agar penjualan dan kematian tidak tertukar.');return;}if(x.type==='income'&&x.category==='Penjualan babi'){alert('Untuk menghindari pendapatan terhitung dua kali, catat penjualan melalui menu Penjualan, bukan Keuangan.');return;}if(['Pakan','Ampas tahu','Sayur','Pakan tambahan'].includes(x.category)&&x.type==='expense'&&(!(Number(x.quantity)>0)||!x.unit.trim())){alert('Untuk pembelian pakan/sayur, isi jumlah lebih dari nol dan satuan (kg, karung, ikat, dan sebagainya) agar stok otomatis tercatat.');return;}if(existing&&!canReversePurchaseStock(existing))return;if(existing&&existing.pigEffect){const oldPig=state.pigs.find(p=>p.id===existing.pigEffect.pigId);if(oldPig&&(pigDeadCount(oldPig)>0||pigSoldCount(oldPig)>0)){alert('Transaksi pembelian ini tidak bisa diedit karena kelompok sudah memiliki catatan kematian atau penjualan.');return;}}if(existing){reversePurchaseStock(existing);reversePigPurchase(existing)}addPurchaseStock(x);addPigPurchase(x);state.finance=id?state.finance.map(a=>a.id===id?x:a):[...state.finance,x];save();resetForm(['finId','finDate','finDesc','finQty','finUnit','finPrice','finPigWeight','finAmount','finNotes']);$('finTitle').textContent='Tambah transaksi keuangan'};
+$('useFeedForm').onsubmit=e=>{e.preventDefault();let feed=state.feeds.find(x=>x.id===$('useFeed').value),qty=Number($('useQty').value);if(!feed)return alert('Tambahkan stok pakan terlebih dahulu.');if(!(qty>0)||!Number.isFinite(qty))return alert('Jumlah pemakaian harus lebih dari nol.');if(qty>Number(feed.stock)){alert('Stok tidak cukup. Pemakaian tidak disimpan agar stok tidak salah.');return;}feed.stock=Number(feed.stock)-qty;const useId='u-'+Date.now();state.uses.push({id:useId,date:$('useDate').value,feedId:feed.id,name:feed.name,qty,unit:feed.unit,unitPrice:Number(feed.price||0),group:$('useGroup').value});state.finance.push({id:'fu-'+useId.slice(2),linkedUseId:useId,nonCash:true,date:$('useDate').value,type:'expense',category:'Pakan',description:'Pemakaian '+feed.name,quantity:qty,unit:feed.unit,unitPrice:Number(feed.price||0),amount:qty*Number(feed.price||0),notes:'Pemakaian pakan'+($('useGroup').value?' untuk '+$('useGroup').value:'')});save();resetForm(['useDate','useQty','useGroup']);alert('Pemakaian tercatat; stok dan biaya pakan diperbarui.')};
+$('deathForm').onsubmit=e=>{e.preventDefault();const pigTag=$('deathPig').value.trim(),qty=Number($('deathQty').value),date=$('deathDate').value;const group=state.pigs.find(p=>normalizeName(p.tag)===normalizeName(pigTag));if(!group){alert('Kelompok babi tidak ditemukan. Pilih kelompok yang ada di Data Babi.');return;}if(!date||!(qty>0)||!Number.isInteger(qty)){alert('Isi tanggal dan jumlah kematian dalam bilangan ekor yang benar.');return;}const available=pigAliveCount(group);if(qty>available){alert('Jumlah kematian melebihi babi yang masih hidup ('+available+' ekor).');return;}state.deaths.push({id:'d-'+Date.now(),date,pig:group.tag,qty,notes:$('deathNotes').value.trim()});save();resetForm(['deathDate','deathPig','deathNotes']);$('deathQty').value=1;alert('Kematian tersimpan. Jumlah babi hidup otomatis berkurang.')};
+$('deathClear').onclick=()=>{resetForm(['deathDate','deathNotes']);$('deathPig').value='';$('deathQty').value=1};
+function calculateSaleTotal(){const w=Number($('saleWeight').value||0),p=Number($('salePerKg').value||0);if(w>0&&p>0)$('saleTotal').value=Math.round(w*p)}$('saleWeight').addEventListener('input',calculateSaleTotal);$('salePerKg').addEventListener('input',calculateSaleTotal);
+$('saleForm').onsubmit=e=>{e.preventDefault();let id=$('saleId').value;let x={id:id||'s-'+Date.now(),date:$('saleDate').value,pig:$('salePig').value.trim(),qty:Number($('saleQty').value||0),weight:Number($('saleWeight').value||0),perKg:Number($('salePerKg').value||0),total:Number($('saleTotal').value||0),buyer:$('saleBuyer').value.trim(),notes:$('saleNotes').value.trim()};if(!x.date||!x.pig||!(x.qty>0)||!(x.total>=0)){alert('Isi tanggal, kelompok babi, jumlah ekor, dan total penjualan dengan benar.');return;}const group=state.pigs.find(p=>normalizeName(p.tag)===normalizeName(x.pig));if(!group){alert('Kelompok babi tidak ditemukan. Pilih/ketik ID kelompok yang ada di menu Data Babi.');return;}if(group){const otherSales=state.sales.filter(s=>s.id!==id&&normalizeName(s.pig)===normalizeName(x.pig)).reduce((n,s)=>n+Number(s.qty||0),0);const available=(group.status==='Habis dijual'||group.status==='Mati'||group.status==='Semua mati')?0:Number(group.qty||0)-pigDeadCount(group)-otherSales;if(x.qty>available){alert('Jumlah penjualan melebihi jumlah babi yang masih tersedia pada kelompok ini ('+Math.max(0,available)+' ekor).');return;}}if(id){state.sales=state.sales.map(a=>a.id===id?x:a)}else{state.sales.push(x)}save();resetForm(['saleId','saleDate','salePig','saleQty','saleWeight','salePerKg','saleTotal','saleBuyer','saleNotes']);$('saleQty').value=1;$('saleTitle').textContent='Catat penjualan babi'};
+$('finClear').onclick=()=>{resetForm(['finId','finDate','finDesc','finQty','finUnit','finPrice','finPigWeight','finAmount','finNotes']);$('finTitle').textContent='Tambah transaksi keuangan'};
+$('saleClear').onclick=()=>{resetForm(['saleId','saleDate','salePig','saleQty','saleWeight','salePerKg','saleTotal','saleBuyer','saleNotes']);$('saleQty').value=1};
+$('finSearch').oninput=renderFinance;$('finMonth').onchange=renderFinance;$('runReport').onclick=renderReport;$('useFilterDate').onchange=renderUses;$('useFilterFeed').onchange=renderUses;
+window.editItem=(type,id)=>{if(type==='finance'){const tx=state.finance.find(a=>a.id===id);if(tx&&tx.linkedUseId){alert('Biaya ini dibuat dari pemakaian pakan. Edit atau hapus melalui Riwayat pemakaian harian agar stok dan biaya tetap cocok.');setPage('feed');return;}}if(type==='pig'){alert('Data babi dihitung otomatis dari transaksi pembelian. Perbaiki transaksi asal di menu Keuangan.');setPage('finance');return;}let key={finance:'finance',pig:'pigs',feed:'feeds',sale:'sales'}[type],x=state[key].find(a=>a.id===id);if(!x)return;const set=(k,v)=>$(k).value=v??'';if(type==='finance'){[['finId',x.id],['finDate',x.date],['finType',x.type],['finCat',x.category],['finDesc',x.description],['finQty',x.quantity],['finUnit',x.unit],['finPrice',x.unitPrice],['finPigWeight',x.pigWeight],['finAmount',x.amount],['finNotes',x.notes]].forEach(a=>set(...a));$('finTitle').textContent='Edit transaksi';setPage('finance')}
+
+if(type==='feed'){alert('Stok pakan dikelola otomatis dari transaksi pembelian di menu Keuangan.');return}
+if(type==='sale'){[['saleId',x.id],['saleDate',x.date],['salePig',x.pig],['saleQty',x.qty],['saleWeight',x.weight],['salePerKg',x.perKg],['saleTotal',x.total],['saleBuyer',x.buyer],['saleNotes',x.notes]].forEach(a=>set(...a));$('saleTitle').textContent='Edit penjualan';setPage('sales')}};
+window.deleteItem=(type,id)=>{if(type==='finance'){const tx=state.finance.find(a=>a.id===id);if(tx&&tx.linkedUseId){alert('Biaya ini dibuat dari pemakaian pakan. Hapus melalui Riwayat pemakaian harian agar stok dan biaya tetap cocok.');return;}}if(type==='pig'){alert('Data babi dihitung otomatis dari transaksi pembelian. Hapus atau perbaiki transaksi asal di menu Keuangan.');setPage('finance');return;}if(!confirm('Hapus data ini?'))return;let key={finance:'finance',pig:'pigs',feed:'feeds',sale:'sales'}[type];if(type==='finance'){const tx=state.finance.find(x=>x.id===id);if(!canReversePurchaseStock(tx))return;if(tx&&tx.pigEffect){const pp=state.pigs.find(p=>p.id===tx.pigEffect.pigId);if(pp&&(pigDeadCount(pp)>0||pigSoldCount(pp)>0)){alert('Pembelian tidak bisa dihapus karena kelompok sudah memiliki catatan kematian atau penjualan.');return;}}reversePurchaseStock(tx);reversePigPurchase(tx)}state[key]=state[key].filter(x=>x.id!==id);save()};
+function download(name,content,type){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
+$('exportJson').onclick=()=>download('cadangan-manajemen-ternak-babi.json',JSON.stringify(state,null,2),'application/json');
+$('exportCsv').onclick=()=>{let head=['Tanggal','Arus kas','Kategori','Keterangan','Jumlah','Satuan','Harga satuan','Total','Catatan'],rows=state.finance.map(x=>[x.date,x.type==='income'?'Kas masuk':'Pengeluaran',x.category,x.description,x.quantity,x.unit,x.unitPrice,x.amount,x.notes]);let csv=[head,...rows].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');download('keuangan-ternak-babi.csv','\ufeff'+csv,'text/csv;charset=utf-8')};
+$('importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!d||!Array.isArray(d.finance)||!Array.isArray(d.pigs)||!Array.isArray(d.feeds)||!Array.isArray(d.sales))throw 0;if(!Array.isArray(d.uses))d.uses=[];if(confirm('Impor akan mengganti semua data di perangkat ini. Lanjutkan?')){state=d;save();alert('Data berhasil diimpor.')} }catch(err){alert('File cadangan tidak valid atau formatnya tidak cocok.')}e.target.value=''};
+$('restoreSeed').onclick=()=>{if(confirm('Ganti seluruh transaksi keuangan dengan data awal dari foto?')){state.finance=seedRows.map(x=>({...x}));save()}};
+rebuildFeedInventoryFromHistory();
+render();
+</script>
+</body></html>
